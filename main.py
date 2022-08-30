@@ -71,12 +71,12 @@ def get_weather(region):
     # now风向
     wind_dir = now_response["now"]["windDir"]
     #tem_highest
-    tem_max = response["daily"]["tempMax"]+ u"\N{DEGREE SIGN}" + "C"
+    tem_max = response["daily"]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
     #tem_lowest
-    tem_min= response["daily"]["tempMin"]+ u"\N{DEGREE SIGN}" + "C"
+    tem_min = response["daily"]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
     #uvindex
-    uvindex=response["daily"]["uvIndex"]
-    return weather, temp, wind_dir
+    uvindex = response["daily"]["uvIndex"]
+    return weather, temp, wind_dir, tem_max, tem_min, uvindex
 
  
 def get_ciba():
