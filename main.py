@@ -127,12 +127,12 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, te
                 "value": wind_dir,
                 "color": get_color()
             },
-            "temp_max": {
-                "value": temp_max,
+            "tem_max": {
+                "value": tem_max,
                 "color": get_color()
             },
-            "temp_min": {
-                "value": temp_min,
+            "tem_min": {
+                "value": tem_min,
                 "color": get_color()
             },
             "uvindex": {
