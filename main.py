@@ -64,19 +64,29 @@ def get_weather(region):
     response = get(weather_url, headers=headers).json()
     now_weather_url = "https://devapi.qweather.com/v7/weather/now?location={}&key={}".format(location_id, key)
     now_response = get(now_weather_url, headers=headers).json()
+    air_url = "https://devapi.qweather.com/v7/air/now?location={}&key={}".format(location_id, key)
+    air_response = get(air_url, headers=headers).json()
     # now天气
     weather = now_response["now"]["text"]
     # 当前温度
     temp = now_response["now"]["temp"] + u"\N{DEGREE SIGN}" + "C"
     # now风向
     wind_dir = now_response["now"]["windDir"]
-    #tem_highest
-    tem_max = response["daily"][0]["tempMax"] + u"\N{DEGREE SIGN}" + "C"
-    #tem_lowest
-    tem_min = response["daily"][0]["tempMin"] + u"\N{DEGREE SIGN}" + "C"
-    #uvindex
-    uvindex = response["daily"][0]["uvIndex"]
-    return weather, temp, wind_dir, tem_max, tem_min, uvindex
+    # jintian
+    today = response["daily"][0]
+    # tomorrow = response["daily"][1]
+    # tem_highest
+    tem_max = today["tempMax"] + u"\N{DEGREE SIGN}" + "C"
+    # tem_lowest
+    tem_min = today["tempMin"] + u"\N{DEGREE SIGN}" + "C"
+    # uvindex
+    uvindex = today["uvIndex"]
+    #airvel
+    air_level = air_response["now"]["level"]
+    # air pm2.5
+    airpm =  air_response["now"]["pm2p5"]
+
+    return weather, temp, wind_dir, tem_max, tem_min, uvindex, air_level,airpm
 
  
 def get_ciba():
@@ -92,7 +102,7 @@ def get_ciba():
     return note_ch, note_en
  
  
-def send_message(to_user, access_token, region_name, weather, temp, wind_dir, tem_max, tem_min, uvindex, note_ch, note_en):
+def send_message(to_user, access_token, region_name, weather, temp, wind_dir, tem_max, tem_min, uvindex, air_level, airpm, note_ch, note_en):
     url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={}".format(access_token)
     week_list = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"]
     year = localtime().tm_year
@@ -137,6 +147,14 @@ def send_message(to_user, access_token, region_name, weather, temp, wind_dir, te
             },
             "uvindex": {
                 "value": uvindex,
+                "color": get_color()
+            },
+            "air_level": {
+                "value": air_level,
+                "color": get_color()
+            },
+            "airpm": {
+                "value": airpm,
                 "color": get_color()
             },
             "note_en": {
@@ -203,5 +221,5 @@ if __name__ == "__main__":
         note_ch, note_en = get_ciba()
     # 公众号推送消息
     for user in users:
-        send_message(user, accessToken, region, weather, temp, wind_dir,tem_max, tem_min, uvindex, note_ch, note_en)
+        send_message(user, accessToken, region, weather, temp, wind_dir, tem_max, tem_min, uvindex,air_level,airpm note_ch, note_en)
     os.system("pause")
